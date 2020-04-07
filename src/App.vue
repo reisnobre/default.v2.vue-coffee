@@ -1,28 +1,36 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <hello-world parentMessage="A parent message"></hello-world>
   </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="coffee">
+import HelloWorld from "./components/HelloWorld"
 
-export default {
-  name: 'App',
+export default
+  name: "App"
+  data: ->
+    loaded: false,
+    refreshing: true,
+    updateExists: false,
+    registration: null
+  created: () -> 
+    this.func 5
+
+  methods:
+    showRefreshUI: (e) ->
+      this.registration = e.detail
+      this.updateExists = true
+
+    refreshApp: ->
+      this.updateExists = false
+      if !this.registration || !this.registration.waiting 
+        return
+      this.registration.waiting.postMessage 'skipWaiting'
+
+    func: (x) ->
+      console.log "Hello " + x
   components: {
     HelloWorld
   }
-}
 </script>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
